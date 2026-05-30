@@ -1,0 +1,187 @@
+﻿@page "/matrix"
+@inject ApplicationDbContext context
+
+<PageTitle>Video Matrix</PageTitle>
+
+<style>
+    .matrix-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        background: #1e2a38;
+        color: white;
+    }
+
+    .main-content {
+        display: flex;
+        flex: 1;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .matrix-grid {
+        flex: 3;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    .receiver-tile {
+        background: black;
+        border: 1px solid #444;
+        display: flex;
+        flex-direction: column;
+        /* Quitamos comportamientos extraños asegurando que mantenga consistencia */
+        overflow: hidden;
+    }
+
+    .receiver-header {
+        background: #222;
+        color: white;
+        padding: 5px;
+        font-size: 12px;
+    }
+
+    .video-feed {
+        width: 100%;
+        /* Cambiamos el alto fijo por flex para que ocupe todo el recuadro negro */
+        flex: 1;
+        /* Mantiene la proporción de la imagen recortando los bordes sobrantes */
+        object-fit: cover;
+        /* Evita bugs visuales en algunos navegadores al estirar flex items */
+        min-height: 0;
+    }
+
+    .no-signal {
+        color: red;
+        text-align: center;
+        /* Usamos flex: 1 y centrado dinámico en lugar de un padding fijo */
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .transmitter-panel {
+        flex: 1;
+        background: #111;
+        color: white;
+        padding: 10px;
+        overflow-y: auto;
+    }
+
+    .transmitter-item {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        background: #222;
+        padding: 5px;
+    }
+
+        .transmitter-item img {
+            width: 60px;
+            height: 40px;
+            object-fit: cover;
+        }
+</style>
+
+<div class="matrix-container">
+
+    <!-- 🔝 TOP BAR -->
+    <div class="top-bar">
+        <h3>Video Matrix Control</h3>
+
+        <select class="profile-selector">
+            <option>Default Profile</option>
+        </select>
+
+        <button class="btn">Refresh</button>
+    </div>
+
+    <!-- 🟦 MAIN CONTENT -->
+    <div class="main-content">
+
+        <!-- 📺 MATRIX (RECEPTORS GRID) -->
+        <div class="matrix-grid">
+            @foreach (var receiver in receivers)
+            {
+                <div class="receiver-tile">
+
+                    <div class="receiver-header">
+                        @receiver.Name
+                    </div>
+
+                    @if (GetTransmitter(receiver) is Device tx && tx.Status == DeviceStatus.On)
+                    {
+                        <img src="@tx.ImageUrl" class="video-feed" />
+                    }
+                    else
+                    {
+                        <div class="no-signal">
+                            NO SIGNAL
+                        </div>
+                    }
+
+                </div>
+            }
+        </div>
+
+        <!-- 📡 TRANSMITTER PANEL -->
+        <div class="transmitter-panel">
+            <h4>Transmitters</h4>
+
+            @foreach (var tx in transmitters)
+            {
+                <div class="transmitter-item">
+
+                    <img src="@tx.ImageUrl" />
+
+                    <div>
+                        <strong>@tx.Name</strong>
+                        <p>@tx.Status</p>
+                    </div>
+
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+
+@code {
+
+    private List<Device> receivers = new();
+    private List<Device> transmitters = new();
+    private List<Connection> connections = new();
+
+    protected override void OnInitialized()
+    {
+        receivers = context.Devices
+            .Where(d => d.DeviceType == DeviceType.Receiver)
+            .ToList();
+
+        transmitters = context.Devices
+            .Where(d => d.DeviceType == DeviceType.Transmitter)
+            .ToList();
+
+        connections = context.Connections.ToList();
+    }
+
+    private Device? GetTransmitter(Device receiver)
+    {
+        var connection = connections
+            .FirstOrDefault(c => c.ReceiverId == receiver.Id);
+
+        if (connection == null)
+            return null;
+
+        return transmitters
+            .FirstOrDefault(t => t.Id == connection.TransmitterId);
+    }
+}

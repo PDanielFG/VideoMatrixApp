@@ -1,4 +1,4 @@
-﻿namespace VideoMatrix
+﻿namespace VideoMatrixApp
 {
 
     //Atributos de la bd

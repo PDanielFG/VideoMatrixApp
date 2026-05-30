@@ -1,4 +1,4 @@
-﻿namespace VideoMatrix
+﻿namespace VideoMatrixApp
 {
     //Coenxiones activas en ese momento,  ahora mismo 
     public class Connection

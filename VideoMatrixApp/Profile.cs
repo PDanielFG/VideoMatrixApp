@@ -1,4 +1,4 @@
-﻿namespace VideoMatrix
+﻿namespace VideoMatrixApp
 {
     //Le da nombre a ese perfil guardado
     public class Profile

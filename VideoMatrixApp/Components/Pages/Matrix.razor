@@ -4,129 +4,163 @@
 <PageTitle>Video Matrix</PageTitle>
 
 <style>
-    .matrix-container {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        background-color: #1b1b1b;
+        .matrix-container {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                background-color: #1b1b1b;
+
     }
 
-    .top-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        background: #1e2a38;
-        color: white;
+        .top-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px;
+                background: #1e2a38;
+                color: white;
+
     }
 
-    .main-content {
-        display: flex;
-        flex: 1;
-        gap: 10px;
-        padding: 10px;
+        .top-bar-controls {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+
     }
 
-    .matrix-grid {
-        flex: 3;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        .main-content {
+                display: flex;
+                flex: 1;
+                gap: 10px;
+                padding: 10px;
+
     }
 
-    .receiver-tile {
-        background: black;
-        border: 2px solid #444;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        cursor: pointer;
-        transition: 0.2s;
+        .matrix-grid {
+                flex: 3;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+
     }
 
-        .receiver-tile:hover {
-            border-color: #777;
-        }
+        .receiver-tile {
+                background: black;
+                border: 2px solid #444;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                cursor: pointer;
+                transition: 0.2s;
 
-    .selected {
-        border: 3px solid cyan;
     }
 
-    .receiver-header {
-        background: #222;
-        color: white;
-        padding: 5px;
-        font-size: 12px;
+            .receiver-tile:hover {
+                    border-color: #777;
+
     }
 
-    .video-feed {
-        width: 100%;
-        flex: 1;
-        object-fit: cover;
-        min-height: 0;
+        .selected {
+                border: 3px solid cyan;
+
     }
 
-    .no-signal {
-        color: red;
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: bold;
+        .receiver-header {
+                background: #222;
+                color: white;
+                padding: 5px;
+                font-size: 12px;
+
     }
 
-    .transmitter-panel {
-        flex: 1;
-        background: #111;
-        color: white;
-        padding: 10px;
-        overflow-y: auto;
+        .connection-info {
+                background: #111;
+                color: cyan;
+                font-size: 12px;
+                padding: 4px;
+
     }
 
-    .transmitter-item {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 10px;
-        background: #222;
-        padding: 8px;
-        cursor: pointer;
-        border: 2px solid transparent;
-        transition: 0.2s;
+        .video-feed {
+                width: 100%;
+                flex: 1;
+                object-fit: cover;
+                min-height: 0;
+
     }
 
-        .transmitter-item:hover {
-            border-color: cyan;
-        }
+        .no-signal {
+                color: red;
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-weight: bold;
 
-        .transmitter-item img {
-            width: 80px;
-            height: 50px;
-            object-fit: cover;
-        }
-
-    .status-on {
-        color: lime;
     }
 
-    .status-off {
-        color: red;
+        .transmitter-panel {
+                flex: 1;
+                background: #111;
+                color: white;
+                padding: 10px;
+                overflow-y: auto;
+
     }
 
-    .status-standby {
-        color: orange;
+        .transmitter-item {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 10px;
+                background: #222;
+                padding: 8px;
+                cursor: pointer;
+                border: 2px solid transparent;
+                transition: 0.2s;
+
     }
 
-    .btn {
-        padding: 5px 10px;
-        background: #0d6efd;
-        color: white;
-        border: none;
-        cursor: pointer;
+            .transmitter-item:hover {
+                    border-color: cyan;
+
     }
 
-        .btn:hover {
-            background: #0b5ed7;
-        }
+            .transmitter-item img {
+                    width: 80px;
+                    height: 50px;
+                    object-fit: cover;
+
+    }
+
+        .status-on {
+                color: lime;
+
+    }
+
+        .status-off {
+                color: red;
+
+    }
+
+        .status-standby {
+                color: orange;
+
+    }
+
+        .btn {
+                padding: 5px 10px;
+                background: #0d6efd;
+                color: white;
+                border: none;
+                cursor: pointer;
+
+    }
+
+            .btn:hover {
+                    background: #0b5ed7;
+
+    }
 </style>
 
 <div class="matrix-container">
@@ -135,20 +169,50 @@
 
         <h3>Video Matrix Control</h3>
 
-        <div>
-            <select>
-                <option>Default Profile</option>
+        <!-- CONTROLES PERFILES -->
+        <div class="top-bar-controls">
+
+            <!-- INPUT NOMBRE PERFIL -->
+            <input type="text"
+                   placeholder="Profile name"
+                   @bind="profileName" />
+
+            <!-- BOTÓN GUARDAR PERFIL -->
+            <button class="btn"
+                    @onclick="SaveProfile">
+                Save Profile
+            </button>
+
+            <!-- SELECT DE PERFILES -->
+            <select @bind="selectedProfileId">
+
+                <option value="0">
+                    Select profile
+                </option>
+
+                @foreach (var profile in profiles)
+                {
+                    <option value="@profile.Id">
+                        @profile.Name
+                    </option>
+                }
+
             </select>
 
-            <button class="btn">
-                Refresh
+            <!-- NUEVO: BOTÓN CARGAR PERFIL -->
+            <button class="btn"
+                    @onclick="LoadProfile">
+                Load Profile
             </button>
+
         </div>
 
     </div>
 
+    <!-- MAIN CONTENT -->
     <div class="main-content">
 
+        <!-- MATRIX GRID -->
         <div class="matrix-grid">
 
             @foreach (var receiver in receivers)
@@ -159,6 +223,14 @@
                     <div class="receiver-header">
                         @receiver.Name
                     </div>
+
+                    <!-- MOSTRAR TX CONECTADO -->
+                    @if (GetTransmitter(receiver) is Device connectedTx)
+                    {
+                        <div class="connection-info">
+                            Connected to: @connectedTx.Name
+                        </div>
+                    }
 
                     @if (GetTransmitter(receiver) is Device tx &&
                    tx.Status == DeviceStatus.On)
@@ -178,6 +250,7 @@
 
         </div>
 
+        <!-- TRANSMITTER PANEL -->
         <div class="transmitter-panel">
 
             <h4>Transmitters</h4>
@@ -216,6 +289,15 @@
     private List<Device> transmitters = new();
     private List<Connection> connections = new();
 
+    // LISTA DE PERFILES
+    private List<Profile> profiles = new();
+
+    // NOMBRE DEL PERFIL
+    private string profileName = "";
+
+    // PERFIL SELECCIONADO
+    private int selectedProfileId;
+
     private Device? selectedReceiver;
 
     protected override void OnInitialized()
@@ -226,26 +308,29 @@
     private void LoadData()
     {
         receivers = context.Devices
-            .Where(d => d.DeviceType == DeviceType.Receiver)
-            .ToList();
+          .Where(d => d.DeviceType == DeviceType.Receiver)
+          .ToList();
 
         transmitters = context.Devices
-            .Where(d => d.DeviceType == DeviceType.Transmitter)
-            .ToList();
+          .Where(d => d.DeviceType == DeviceType.Transmitter)
+          .ToList();
 
         connections = context.Connections.ToList();
+
+        // CARGAR PERFILES
+        profiles = context.Profiles.ToList();
     }
 
     private Device? GetTransmitter(Device receiver)
     {
         var connection = connections
-            .FirstOrDefault(c => c.ReceiverId == receiver.Id);
+          .FirstOrDefault(c => c.ReceiverId == receiver.Id);
 
         if (connection == null)
             return null;
 
         return transmitters
-            .FirstOrDefault(t => t.Id == connection.TransmitterId);
+          .FirstOrDefault(t => t.Id == connection.TransmitterId);
     }
 
     private void SelectReceiver(Device receiver)
@@ -258,17 +343,14 @@
         if (selectedReceiver == null)
             return;
 
-        // Buscar conexión existente
         var existingConnection = context.Connections
-            .FirstOrDefault(c => c.ReceiverId == selectedReceiver.Id);
+          .FirstOrDefault(c => c.ReceiverId == selectedReceiver.Id);
 
-        // Si existe, eliminarla
         if (existingConnection != null)
         {
             context.Connections.Remove(existingConnection);
         }
 
-        // Crear nueva conexión
         var newConnection = new Connection
         {
             ReceiverId = selectedReceiver.Id,
@@ -276,6 +358,78 @@
         };
 
         context.Connections.Add(newConnection);
+
+        context.SaveChanges();
+
+        connections = context.Connections.ToList();
+    }
+
+    // GUARDAR PERFIL
+    private void SaveProfile()
+    {
+        // Evitar nombres vacíos
+        if (string.IsNullOrWhiteSpace(profileName))
+            return;
+
+        // Crear perfil
+        var profile = new Profile
+        {
+            Name = profileName
+        };
+
+        context.Profiles.Add(profile);
+
+        context.SaveChanges();
+
+        // Guardar conexiones actuales
+        foreach (var connection in connections)
+        {
+            var profileConnection = new ProfileConnection
+            {
+                ProfileId = profile.Id,
+                ReceiverId = connection.ReceiverId,
+                TransmitterId = connection.TransmitterId
+            };
+
+            context.ProfileConnections.Add(profileConnection);
+        }
+
+        context.SaveChanges();
+
+        // Recargar perfiles
+        profiles = context.Profiles.ToList();
+
+        // Limpiar input
+        profileName = "";
+    }
+
+    // CARGAR PERFIL
+    private void LoadProfile()
+    {
+        if (selectedProfileId == 0)
+            return;
+
+        // Borrar conexiones actuales
+        context.Connections.RemoveRange(context.Connections);
+
+        context.SaveChanges();
+
+        // Obtener conexiones del perfil
+        var profileConnections = context.ProfileConnections
+      .Where(pc => pc.ProfileId == selectedProfileId)
+      .ToList();
+
+        // Restaurar conexiones
+        foreach (var pc in profileConnections)
+        {
+            var connection = new Connection
+            {
+                ReceiverId = pc.ReceiverId,
+                TransmitterId = pc.TransmitterId
+            };
+
+            context.Connections.Add(connection);
+        }
 
         context.SaveChanges();
 

@@ -15,7 +15,7 @@
                 IpAddress = "192.168.1.10",
                 Status = DeviceStatus.On,
                 DeviceType = DeviceType.Transmitter,
-                ImageUrl = "https://picsum.photos/300/200?1"
+                ImageUrl = "https://picsum.photos/id/237/300/200"
             };
 
             var tx2 = new Device
@@ -24,7 +24,7 @@
                 IpAddress = "192.168.1.11",
                 Status = DeviceStatus.On,
                 DeviceType = DeviceType.Transmitter,
-                ImageUrl = "https://picsum.photos/300/200?2"
+                ImageUrl = "https://picsum.photos/id/1015/300/200"
             };
 
             var tx3 = new Device
@@ -33,7 +33,7 @@
                 IpAddress = "192.168.1.12",
                 Status = DeviceStatus.On,
                 DeviceType = DeviceType.Transmitter,
-                ImageUrl = "https://picsum.photos/seed/camera1/300/200"
+                ImageUrl = "https://picsum.photos/id/1016/300/200"
             };
 
             var tx4 = new Device
@@ -42,7 +42,7 @@
                 IpAddress = "192.168.1.13",
                 Status = DeviceStatus.Off,
                 DeviceType = DeviceType.Transmitter,
-                ImageUrl = "https://picsum.photos/seed/studio2/300/200"
+                ImageUrl = "https://picsum.photos/id/1031/300/200"
             };
 
             var tx5 = new Device
@@ -51,7 +51,7 @@
                 IpAddress = "192.168.1.14",
                 Status = DeviceStatus.Standby,
                 DeviceType = DeviceType.Transmitter,
-                ImageUrl = "https://picsum.photos/seed/broadcast3/300/200"
+                ImageUrl = "https://picsum.photos/id/1024/300/200"
             };
 
             

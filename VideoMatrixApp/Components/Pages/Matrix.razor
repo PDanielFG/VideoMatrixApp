@@ -67,6 +67,9 @@
         color: white;
         padding: 5px;
         font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .connection-info {
@@ -153,6 +156,38 @@
             background: #bb2d3b;
         }
 
+        /* pantalla completa */
+    .fullscreen-view {
+        position: fixed;
+        inset: 0;
+        background: black;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .fullscreen-video {
+        width: 100vw;
+        height: 100vh;
+        object-fit: contain;
+    }
+
+    .fullscreen-btn {
+        background: #0d6efd;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: 0.2s;
+    }
+
+        .fullscreen-btn:hover {
+            background: #0b5ed7;
+        }
+
 </style>
 
 <div class="matrix-container">
@@ -210,18 +245,27 @@
 
     <!-- MAIN CONTENT -->
     <div class="main-content">
-
+        
         <!-- RECEIVERS GRID -->
         <div class="matrix-grid">
 
             @foreach (var receiver in receivers)
             {
                 <div class="receiver-tile @(selectedReceiver?.Id == receiver.Id ? "selected" : "")"
-                     @onclick="() => SelectReceiver(receiver)">
+                     @onclick="() => SelectReceiver(receiver)"
+                     @ondblclick="() => fullscreenReceiver = receiver">
 
                     <!-- RECEIVER NAME -->
                     <div class="receiver-header">
-                        @receiver.Name
+
+                        <span>@receiver.Name</span>
+
+                        <button class="fullscreen-btn"
+                                @onclick:stopPropagation="true"
+                                @onclick="() => fullscreenReceiver = receiver">
+                            Pantalla completa
+                        </button>
+
                     </div>
 
                     <!-- CONNECTED TRANSMITTER -->
@@ -254,7 +298,7 @@
         <!-- TRANSMITTER PANEL -->
         <div class="transmitter-panel">
 
-            <h4>Transmidores</h4>
+            <h4>Transmisores</h4>
 
             @foreach (var tx in transmitters)
             {
@@ -282,7 +326,37 @@
 
     </div>
 
-</div>
+    </div>
+
+    @if (fullscreenReceiver != null)
+    {
+        <div class="fullscreen-view">
+
+            <button class="btn btn-danger"
+                    style="position:absolute;top:20px;right:20px;z-index:10000;"
+                    @onclick="() => fullscreenReceiver = null">
+                Salir pantalla completa
+            </button>
+
+            @{
+                var tx = GetTransmitter(fullscreenReceiver);
+            }
+
+            @if (tx != null && tx.Status == DeviceStatus.On)
+            {
+                <img src="@tx.ImageUrl"
+                     class="fullscreen-video" />
+            }
+            else
+            {
+                <div class="no-signal">
+                    SIN SEÑAL
+                </div>
+            }
+
+        </div>
+    }
+
 
 @code {
 
@@ -301,6 +375,17 @@
 
     // Selected profile
     private int selectedProfileId;
+
+    //Pantalla completa 
+    private Device? fullscreenReceiver;
+
+    private void ToggleFullscreen(Device receiver)
+    {
+        if (fullscreenReceiver?.Id == receiver.Id)
+            fullscreenReceiver = null;
+        else
+            fullscreenReceiver = receiver;
+    }
 
     protected override void OnInitialized()
     {

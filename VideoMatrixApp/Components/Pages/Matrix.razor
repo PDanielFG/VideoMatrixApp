@@ -160,14 +160,14 @@
     <!-- TOP BAR -->
     <div class="top-bar">
 
-        <h3>Video Matrix Control</h3>
+        <h3>Administración matriz de vídeo</h3>
 
         <!-- PROFILE CONTROLS -->
         <div class="top-bar-controls">
 
             <!-- PROFILE NAME -->
             <input type="text"
-                   placeholder="Profile name"
+                   placeholder="Nombre perfil"
                    @bind="profileName" />
 
             <!-- SAVE PROFILE -->
@@ -180,7 +180,7 @@
             <select @bind="selectedProfileId">
 
                 <option value="0">
-                    Select profile
+                    Selecciona perfil
                 </option>
 
                 @foreach (var profile in profiles)
@@ -228,7 +228,7 @@
                     @if (GetTransmitter(receiver) is Device connectedTx)
                     {
                         <div class="connection-info">
-                            Connected to: @connectedTx.Name
+                            Conectado a: @connectedTx.Name
                         </div>
                     }
 
@@ -242,7 +242,7 @@
                     else
                     {
                         <div class="no-signal">
-                            NO SIGNAL
+                            SIN SEÑAL
                         </div>
                     }
 
@@ -254,7 +254,7 @@
         <!-- TRANSMITTER PANEL -->
         <div class="transmitter-panel">
 
-            <h4>Transmitters</h4>
+            <h4>Transmidores</h4>
 
             @foreach (var tx in transmitters)
             {

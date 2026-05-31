@@ -8,8 +8,9 @@
     .matrix-container {
         display: flex;
         flex-direction: column;
-        height: 100vh;
+        min-height: 100vh;
         background-color: #1b1b1b;
+        overflow: hidden;
     }
 
     .top-bar {
@@ -32,6 +33,7 @@
         flex: 1;
         gap: 10px;
         padding: 10px;
+        overflow: hidden;
     }
 
     .matrix-grid {
@@ -39,6 +41,7 @@
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
+        overflow-y: auto;
     }
 
     .receiver-tile {
@@ -142,6 +145,14 @@
             background: #0b5ed7;
         }
 
+    .btn-danger {
+        background: #dc3545;
+    }
+
+        .btn-danger:hover {
+            background: #bb2d3b;
+        }
+
 </style>
 
 <div class="matrix-container">
@@ -162,7 +173,7 @@
             <!-- SAVE PROFILE -->
             <button class="btn"
                     @onclick="SaveProfile">
-                Save Profile
+                Guardar perfil
             </button>
 
             <!-- PROFILE SELECTOR -->
@@ -184,13 +195,13 @@
             <!-- LOAD PROFILE -->
             <button class="btn"
                     @onclick="LoadProfile">
-                Load Profile
+                Cargar perfil
             </button>
 
             <!-- DELETE PROFILE -->
-            <button class="btn"
+            <button class="btn btn-danger"
                     @onclick="DeleteProfile">
-                Delete Profile
+                Borrar perfil
             </button>
 
         </div>

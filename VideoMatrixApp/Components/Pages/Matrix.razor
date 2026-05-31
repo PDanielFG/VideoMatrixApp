@@ -4,6 +4,7 @@
 <PageTitle>Video Matrix</PageTitle>
 
 <style>
+
     .matrix-container {
         display: flex;
         flex-direction: column;
@@ -140,29 +141,31 @@
         .btn:hover {
             background: #0b5ed7;
         }
+
 </style>
 
 <div class="matrix-container">
 
+    <!-- TOP BAR -->
     <div class="top-bar">
 
         <h3>Video Matrix Control</h3>
 
-        <!-- CONTROLES PERFILES -->
+        <!-- PROFILE CONTROLS -->
         <div class="top-bar-controls">
 
-            <!-- INPUT NOMBRE PERFIL -->
+            <!-- PROFILE NAME -->
             <input type="text"
                    placeholder="Profile name"
                    @bind="profileName" />
 
-            <!-- BOTÓN GUARDAR PERFIL -->
+            <!-- SAVE PROFILE -->
             <button class="btn"
                     @onclick="SaveProfile">
                 Save Profile
             </button>
 
-            <!-- SELECT DE PERFILES -->
+            <!-- PROFILE SELECTOR -->
             <select @bind="selectedProfileId">
 
                 <option value="0">
@@ -178,10 +181,16 @@
 
             </select>
 
-            <!-- NUEVO: BOTÓN CARGAR PERFIL -->
+            <!-- LOAD PROFILE -->
             <button class="btn"
                     @onclick="LoadProfile">
                 Load Profile
+            </button>
+
+            <!-- DELETE PROFILE -->
+            <button class="btn"
+                    @onclick="DeleteProfile">
+                Delete Profile
             </button>
 
         </div>
@@ -191,7 +200,7 @@
     <!-- MAIN CONTENT -->
     <div class="main-content">
 
-        <!-- MATRIX GRID -->
+        <!-- RECEIVERS GRID -->
         <div class="matrix-grid">
 
             @foreach (var receiver in receivers)
@@ -199,11 +208,12 @@
                 <div class="receiver-tile @(selectedReceiver?.Id == receiver.Id ? "selected" : "")"
                      @onclick="() => SelectReceiver(receiver)">
 
+                    <!-- RECEIVER NAME -->
                     <div class="receiver-header">
                         @receiver.Name
                     </div>
 
-                    <!-- MOSTRAR TX CONECTADO -->
+                    <!-- CONNECTED TRANSMITTER -->
                     @if (GetTransmitter(receiver) is Device connectedTx)
                     {
                         <div class="connection-info">
@@ -211,6 +221,7 @@
                         </div>
                     }
 
+                    <!-- VIDEO -->
                     @if (GetTransmitter(receiver) is Device tx &&
                    tx.Status == DeviceStatus.On)
                     {
@@ -268,16 +279,17 @@
     private List<Device> transmitters = new();
     private List<Connection> connections = new();
 
-    // LISTA DE PERFILES
+    // Profiles
     private List<Profile> profiles = new();
 
-    // NOMBRE DEL PERFIL
+    // Selected receiver
+    private Device? selectedReceiver;
+
+    // Profile name input
     private string profileName = "";
 
-    // PERFIL SELECCIONADO
+    // Selected profile
     private int selectedProfileId;
-
-    private Device? selectedReceiver;
 
     protected override void OnInitialized()
     {
@@ -287,29 +299,28 @@
     private void LoadData()
     {
         receivers = context.Devices
-          .Where(d => d.DeviceType == DeviceType.Receiver)
-          .ToList();
+            .Where(d => d.DeviceType == DeviceType.Receiver)
+            .ToList();
 
         transmitters = context.Devices
-          .Where(d => d.DeviceType == DeviceType.Transmitter)
-          .ToList();
+            .Where(d => d.DeviceType == DeviceType.Transmitter)
+            .ToList();
 
         connections = context.Connections.ToList();
 
-        // CARGAR PERFILES
         profiles = context.Profiles.ToList();
     }
 
     private Device? GetTransmitter(Device receiver)
     {
         var connection = connections
-          .FirstOrDefault(c => c.ReceiverId == receiver.Id);
+            .FirstOrDefault(c => c.ReceiverId == receiver.Id);
 
         if (connection == null)
             return null;
 
         return transmitters
-          .FirstOrDefault(t => t.Id == connection.TransmitterId);
+            .FirstOrDefault(t => t.Id == connection.TransmitterId);
     }
 
     private void SelectReceiver(Device receiver)
@@ -322,14 +333,16 @@
         if (selectedReceiver == null)
             return;
 
+        // Remove old connection
         var existingConnection = context.Connections
-          .FirstOrDefault(c => c.ReceiverId == selectedReceiver.Id);
+            .FirstOrDefault(c => c.ReceiverId == selectedReceiver.Id);
 
         if (existingConnection != null)
         {
             context.Connections.Remove(existingConnection);
         }
 
+        // Create new connection
         var newConnection = new Connection
         {
             ReceiverId = selectedReceiver.Id,
@@ -340,17 +353,16 @@
 
         context.SaveChanges();
 
+        // Reload connections
         connections = context.Connections.ToList();
     }
 
-    // GUARDAR PERFIL
     private void SaveProfile()
     {
-        // Evitar nombres vacíos
         if (string.IsNullOrWhiteSpace(profileName))
             return;
 
-        // Crear perfil
+        // Create profile
         var profile = new Profile
         {
             Name = profileName
@@ -360,7 +372,7 @@
 
         context.SaveChanges();
 
-        // Guardar conexiones actuales
+        // Save current connections
         foreach (var connection in connections)
         {
             var profileConnection = new ProfileConnection
@@ -375,30 +387,29 @@
 
         context.SaveChanges();
 
-        // Recargar perfiles
+        // Reload profiles
         profiles = context.Profiles.ToList();
 
-        // Limpiar input
+        // Clear input
         profileName = "";
     }
 
-    // CARGAR PERFIL
     private void LoadProfile()
     {
         if (selectedProfileId == 0)
             return;
 
-        // Borrar conexiones actuales
+        // Remove current connections
         context.Connections.RemoveRange(context.Connections);
 
         context.SaveChanges();
 
-        // Obtener conexiones del perfil
+        // Get saved profile connections
         var profileConnections = context.ProfileConnections
-      .Where(pc => pc.ProfileId == selectedProfileId)
-      .ToList();
+            .Where(pc => pc.ProfileId == selectedProfileId)
+            .ToList();
 
-        // Restaurar conexiones
+        // Restore connections
         foreach (var pc in profileConnections)
         {
             var connection = new Connection
@@ -412,8 +423,39 @@
 
         context.SaveChanges();
 
-        // Recargar conexiones
+        // Reload current connections
         connections = context.Connections.ToList();
+    }
+
+    private void DeleteProfile()
+    {
+        if (selectedProfileId == 0)
+            return;
+
+        // Get profile
+        var profile = context.Profiles
+            .FirstOrDefault(p => p.Id == selectedProfileId);
+
+        if (profile == null)
+            return;
+
+        // Get profile connections
+        var profileConnections = context.ProfileConnections
+            .Where(pc => pc.ProfileId == selectedProfileId);
+
+        // Remove profile connections
+        context.ProfileConnections.RemoveRange(profileConnections);
+
+        // Remove profile
+        context.Profiles.Remove(profile);
+
+        context.SaveChanges();
+
+        // Reload profiles
+        profiles = context.Profiles.ToList();
+
+        // Reset selected profile
+        selectedProfileId = 0;
     }
 
     private string GetStatusClass(DeviceStatus status)
@@ -426,4 +468,5 @@
             _ => ""
         };
     }
+
 }

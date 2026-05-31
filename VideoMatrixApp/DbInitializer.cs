@@ -20,7 +20,7 @@
 
             var tx2 = new Device
             {
-                Name = "Gaming PC",
+                Name = "Camara 2",
                 IpAddress = "192.168.1.11",
                 Status = DeviceStatus.On,
                 DeviceType = DeviceType.Transmitter,
@@ -29,7 +29,7 @@
 
             var tx3 = new Device
             {
-                Name = "Gaming PC",
+                Name = "Camara 3",
                 IpAddress = "192.168.1.12",
                 Status = DeviceStatus.On,
                 DeviceType = DeviceType.Transmitter,
@@ -38,7 +38,7 @@
 
             var tx4 = new Device
             {
-                Name = "Gaming PC",
+                Name = "Camara 4",
                 IpAddress = "192.168.1.13",
                 Status = DeviceStatus.Off,
                 DeviceType = DeviceType.Transmitter,
@@ -47,7 +47,7 @@
 
             var tx5 = new Device
             {
-                Name = "Gaming PC",
+                Name = "Camara 5",
                 IpAddress = "192.168.1.14",
                 Status = DeviceStatus.Standby,
                 DeviceType = DeviceType.Transmitter,

@@ -1,166 +1,145 @@
-﻿@page "/matrix"
+﻿@page "/"
 @inject ApplicationDbContext context
 
 <PageTitle>Video Matrix</PageTitle>
 
 <style>
-        .matrix-container {
-                display: flex;
-                flex-direction: column;
-                height: 100vh;
-                background-color: #1b1b1b;
-
+    .matrix-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background-color: #1b1b1b;
     }
 
-        .top-bar {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 10px;
-                background: #1e2a38;
-                color: white;
-
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: #1e2a38;
+        color: white;
     }
 
-        .top-bar-controls {
-                display: flex;
-                gap: 10px;
-                align-items: center;
-
+    .top-bar-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
     }
 
-        .main-content {
-                display: flex;
-                flex: 1;
-                gap: 10px;
-                padding: 10px;
-
+    .main-content {
+        display: flex;
+        flex: 1;
+        gap: 10px;
+        padding: 10px;
     }
 
-        .matrix-grid {
-                flex: 3;
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-
+    .matrix-grid {
+        flex: 3;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
     }
 
-        .receiver-tile {
-                background: black;
-                border: 2px solid #444;
-                display: flex;
-                flex-direction: column;
-                overflow: hidden;
-                cursor: pointer;
-                transition: 0.2s;
-
+    .receiver-tile {
+        background: black;
+        border: 2px solid #444;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        cursor: pointer;
+        transition: 0.2s;
     }
 
-            .receiver-tile:hover {
-                    border-color: #777;
+        .receiver-tile:hover {
+            border-color: #777;
+        }
 
+    .selected {
+        border: 3px solid cyan;
     }
 
-        .selected {
-                border: 3px solid cyan;
-
+    .receiver-header {
+        background: #222;
+        color: white;
+        padding: 5px;
+        font-size: 12px;
     }
 
-        .receiver-header {
-                background: #222;
-                color: white;
-                padding: 5px;
-                font-size: 12px;
-
+    .connection-info {
+        background: #111;
+        color: cyan;
+        font-size: 12px;
+        padding: 4px;
     }
 
-        .connection-info {
-                background: #111;
-                color: cyan;
-                font-size: 12px;
-                padding: 4px;
-
+    .video-feed {
+        width: 100%;
+        flex: 1;
+        object-fit: cover;
+        min-height: 0;
     }
 
-        .video-feed {
-                width: 100%;
-                flex: 1;
-                object-fit: cover;
-                min-height: 0;
-
+    .no-signal {
+        color: red;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
     }
 
-        .no-signal {
-                color: red;
-                flex: 1;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-weight: bold;
-
+    .transmitter-panel {
+        flex: 1;
+        background: #111;
+        color: white;
+        padding: 10px;
+        overflow-y: auto;
     }
 
-        .transmitter-panel {
-                flex: 1;
-                background: #111;
-                color: white;
-                padding: 10px;
-                overflow-y: auto;
-
+    .transmitter-item {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        background: #222;
+        padding: 8px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: 0.2s;
     }
 
-        .transmitter-item {
-                display: flex;
-                gap: 10px;
-                margin-bottom: 10px;
-                background: #222;
-                padding: 8px;
-                cursor: pointer;
-                border: 2px solid transparent;
-                transition: 0.2s;
+        .transmitter-item:hover {
+            border-color: cyan;
+        }
 
+        .transmitter-item img {
+            width: 80px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+    .status-on {
+        color: lime;
     }
 
-            .transmitter-item:hover {
-                    border-color: cyan;
-
+    .status-off {
+        color: red;
     }
 
-            .transmitter-item img {
-                    width: 80px;
-                    height: 50px;
-                    object-fit: cover;
-
+    .status-standby {
+        color: orange;
     }
 
-        .status-on {
-                color: lime;
-
+    .btn {
+        padding: 5px 10px;
+        background: #0d6efd;
+        color: white;
+        border: none;
+        cursor: pointer;
     }
 
-        .status-off {
-                color: red;
-
-    }
-
-        .status-standby {
-                color: orange;
-
-    }
-
-        .btn {
-                padding: 5px 10px;
-                background: #0d6efd;
-                color: white;
-                border: none;
-                cursor: pointer;
-
-    }
-
-            .btn:hover {
-                    background: #0b5ed7;
-
-    }
+        .btn:hover {
+            background: #0b5ed7;
+        }
 </style>
 
 <div class="matrix-container">

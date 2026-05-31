@@ -58,7 +58,7 @@
             // Receptores
             var rx1 = new Device
             {
-                Name = "Screen 1",
+                Name = "Pantalla 1",
                 IpAddress = "192.168.1.20",
                 Status = DeviceStatus.On,
                 DeviceType = DeviceType.Receiver,
@@ -67,7 +67,7 @@
 
             var rx2 = new Device
             {
-                Name = "Projector",
+                Name = "Pantalla 2",
                 IpAddress = "192.168.1.21",
                 Status = DeviceStatus.On,
                 DeviceType = DeviceType.Receiver,
@@ -76,7 +76,7 @@
 
             var rx3 = new Device
             {
-                Name = "Projector",
+                Name = "Pantalla 3",
                 IpAddress = "192.168.1.22",
                 Status = DeviceStatus.On,
                 DeviceType = DeviceType.Receiver,
@@ -86,7 +86,7 @@
 
             var rx4 = new Device
             {
-                Name = "Projector",
+                Name = "Pantalla 4",
                 IpAddress = "192.168.1.23",
                 Status = DeviceStatus.On,
                 DeviceType = DeviceType.Receiver,
@@ -95,7 +95,7 @@
 
             var rx5 = new Device
             {
-                Name = "Projector",
+                Name = "Pantalla 5",
                 IpAddress = "192.168.1.24",
                 Status = DeviceStatus.On,
                 DeviceType = DeviceType.Receiver,

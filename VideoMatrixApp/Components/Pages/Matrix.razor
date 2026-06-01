@@ -395,8 +395,9 @@
     private void LoadData()
     {
         receivers = context.Devices
-            .Where(d => d.DeviceType == DeviceType.Receiver)
-            .ToList();
+         .Where(d => d.DeviceType == DeviceType.Receiver
+                  && d.Status == DeviceStatus.On)
+         .ToList();
 
         transmitters = context.Devices
             .Where(d => d.DeviceType == DeviceType.Transmitter)

@@ -121,10 +121,20 @@
             <input type="text" @bind="newDevice.IpAddress" />
         </div>
 
-        <div class="form-group">
-            <label>URL Imagen</label>
-            <input type="text" @bind="newDevice.ImageUrl" />
-        </div>
+        @if (newDevice.DeviceType == DeviceType.Transmitter)
+        {
+            <div class="form-group">
+                <label>URL Imagen</label>
+                <input type="text" @bind="newDevice.ImageUrl" />
+            </div>
+        }
+        else
+        {
+            <div class="form-group">
+                <label>URL Imagen</label>
+                <input type="text" disabled value="No disponible para Receiver" />
+            </div>
+        }
 
         <div class="form-group">
             <label>Tipo de dispositivo</label>
@@ -304,6 +314,12 @@
     {
         if (string.IsNullOrWhiteSpace(newDevice.Name))
             return;
+
+        //Aunque lo evite en el frontend, asegurarlo en el backend. Si es un receptor no url de imagen
+        if (newDevice.DeviceType == DeviceType.Receiver)
+        {
+            newDevice.ImageUrl = null;
+        }
 
         context.Devices.Add(newDevice);
         context.SaveChanges();

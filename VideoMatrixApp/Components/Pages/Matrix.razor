@@ -196,7 +196,6 @@
 
 
     /* Responsive. Móvil */
-    /* Responsive. Móvil */
     @@media (max-width: 768px) {
 
         .main-content {
@@ -240,7 +239,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 180px; /* 👈 clave */
+        min-height: 180px;
     }
 </style>
 
@@ -266,14 +265,15 @@
             </button>
 
             <!-- PROFILE SELECTOR -->
-            
             <div class="profile-row">
                 <select @bind="selectedProfileId">
 
+                    @* Primera opcion por defecto *@
                     <option value="0">
                         Selecciona perfil
                     </option>
 
+                    @* Para mostrar el nombre de los perfiles guardados, de manera dinámica*@
                     @foreach (var profile in profiles)
                     {
                         <option value="@profile.Id">
@@ -303,12 +303,13 @@
     <!-- MAIN CONTENT -->
     <div class="main-content">
         
-        <!-- RECEIVERS GRID -->
+        <!-- CUADRÍCULA DE RECEPTORES -->
         <div class="matrix-grid">
 
-            @foreach (var receiver in receivers)
+            @foreach (var receiver in receivers)    //Recorre cada receptor 
             {
-                <div class="receiver-tile @(selectedReceiver?.Id == receiver.Id ? "selected" : "")"
+                //Genera una tarjeta para cada receptor, clickado o no 
+                <div class="receiver-tile @(selectedReceiver?.Id == receiver.Id ? "selected" : "")" 
                      @onclick="() => SelectReceiver(receiver)"
                      @ondblclick="() => fullscreenReceiver = receiver">
 
@@ -329,23 +330,24 @@
                     @if (GetTransmitter(receiver) is Device connectedTx)
                     {
                         <div class="connection-info">
-                            Conectado a: @connectedTx.Name
+                            Conectado a: @connectedTx.Name  <!--Busca la conexión y la muestra en la tarjeta receptor-->
                         </div>
                     }
 
                     <!-- VIDEO -->
-                    <div class="video-area">
+                    <div class="video-area">    <!--Altura tarjeta-->
 
+                        @* Se comprueba si existe el transmisor y se encuentra encendido*@
                         @if (GetTransmitter(receiver) is Device tx &&
                              tx.Status == DeviceStatus.On)
                         {
                             <img src="@tx.ImageUrl"
-                                 class="video-feed" />
+                                 class="video-feed" />  //Muestra la imagen del transmisor en el receptor 
                         }
                         else
                         {
                             <div class="no-signal">
-                                SIN SEÑAL
+                                SIN SEÑAL              <!--Indica que no hay señal-->
                             </div>
                         }
 
@@ -361,25 +363,21 @@
 
             <h4>Transmisores</h4>
 
-            @foreach (var tx in transmitters)
+            @foreach (var tx in transmitters)   //Recorre cada transmisor y va creando tarjetas, esta vez en menu vertical
             {
                 <div class="transmitter-item"
-                     @onclick="() => AssignTransmitter(tx)">
+                     @onclick="() => AssignTransmitter(tx)">    <!--Clickable, los enlaaz con el receptor seleccionado-->
 
-                    <img src="@tx.ImageUrl" />
-
+                    <img src="@tx.ImageUrl" />  <!--Imagen/video del transmisor-->
+                    
+                    <!--Datos del transmisor-->
                     <div>
-
                         <strong>@tx.Name</strong>
-
                         <p>@tx.IpAddress</p>
-
                         <p class="@(GetStatusClass(tx.Status))">
                             @tx.Status
                         </p>
-
                     </div>
-
                 </div>
             }
 
@@ -387,9 +385,9 @@
 
     </div>
 
-    </div>
+</div>
 
-    @if (fullscreenReceiver != null)
+    @if (fullscreenReceiver != null)    //Receptor con pantalla completa activado, entonces muestralo
     {
         <div class="fullscreen-view">
 
@@ -400,18 +398,18 @@
             </button>
 
             @{
-                var tx = GetTransmitter(fullscreenReceiver);
+                var tx = GetTransmitter(fullscreenReceiver);    //¿Que camara esta conectada al receptor?, para mostrar realmente en pantalla completa la camara que es lo que tiene la imagen
             }
 
             @if (tx != null && tx.Status == DeviceStatus.On)
             {
                 <img src="@tx.ImageUrl"
-                     class="fullscreen-video" />
+                     class="fullscreen-video" />    //Pantalla completa, imagen
             }
             else
             {
                 <div class="no-signal">
-                    SIN SEÑAL
+                    SIN SEÑAL   <!--Pantalla completa, sin señal-->
                 </div>
             }
 
@@ -425,21 +423,13 @@
     private List<Device> transmitters = new();
     private List<Connection> connections = new();
 
-    // Profiles
     private List<Profile> profiles = new();
-
-    // Selected receiver
     private Device? selectedReceiver;
-
-    // Profile name input
     private string profileName = "";
-
-    // Selected profile
     private int selectedProfileId;
-
-    //Pantalla completa 
     private Device? fullscreenReceiver;
 
+    //Alterna entre pantalla completa y normal, si el receptor ya esta en pantalla completa, lo quita, sino lo pone
     private void ToggleFullscreen(Device receiver)
     {
         if (fullscreenReceiver?.Id == receiver.Id)
@@ -448,37 +438,40 @@
             fullscreenReceiver = receiver;
     }
 
+    //Al iniciar el componente, llama al método para carga los datos de la base de datos
     protected override void OnInitialized()
     {
         LoadData();
     }
 
+    //carga los datos, los guara en variables
     private void LoadData()
     {
-        receivers = context.Devices
-         .Where(d => d.DeviceType == DeviceType.Receiver
-                  && d.Status == DeviceStatus.On)
-         .ToList();
+        //LINQ
+        //Guarda en la de dispositivos, los receptores, que estén encendidos, .ToList()->Ejecuta la consulta y devuelve una lista con los resultados
+        receivers = context.Devices.Where(d => d.DeviceType == DeviceType.Receiver && d.Status == DeviceStatus.On).ToList();
 
-        transmitters = context.Devices
-            .Where(d => d.DeviceType == DeviceType.Transmitter)
-            .ToList();
+        //Almacena los transmisores, sin importar su estado
+        transmitters = context.Devices.Where(d => d.DeviceType == DeviceType.Transmitter).ToList();
 
+        //Hace lo mismo con las conexiones
         connections = context.Connections.ToList();
 
+        //Y con los perfiles
         profiles = context.Profiles.ToList();
     }
 
+    //Para saber el transmisor que tiene asociado un receptor
     private Device? GetTransmitter(Device receiver)
     {
-        var connection = connections
-            .FirstOrDefault(c => c.ReceiverId == receiver.Id);
+        //Se busca primera conexión del determinado receptor, es decir, el ultimo cambio que ha tenido 
+        var connection = connections.FirstOrDefault(c => c.ReceiverId == receiver.Id);
 
-        if (connection == null)
+        if (connection == null) // Si no hay conexión, devuelve null
             return null;
 
-        return transmitters
-            .FirstOrDefault(t => t.Id == connection.TransmitterId);
+        //Una vez con el id de la camara de la conexión, busca el transmisor asociado a ese id y lo devuelve
+        return transmitters.FirstOrDefault(t => t.Id == connection.TransmitterId);
     }
 
     private void SelectReceiver(Device receiver)
@@ -486,54 +479,54 @@
         selectedReceiver = receiver;
     }
 
+
+    //conecta receptor con transmisor
     private void AssignTransmitter(Device transmitter)
     {
         if (selectedReceiver == null)
             return;
 
-        // Remove old connection
-        var existingConnection = context.Connections
-            .FirstOrDefault(c => c.ReceiverId == selectedReceiver.Id);
+        // Busca conexión existente y luego la borra
+        var existingConnection = context.Connections.FirstOrDefault(c => c.ReceiverId == selectedReceiver.Id);
 
         if (existingConnection != null)
         {
             context.Connections.Remove(existingConnection);
         }
 
-        // Create new connection
+        // Nueva conexión
         var newConnection = new Connection
         {
             ReceiverId = selectedReceiver.Id,
             TransmitterId = transmitter.Id
         };
 
-        context.Connections.Add(newConnection);
+        context.Connections.Add(newConnection); //añade conexión a la base de datos
 
-        context.SaveChanges();
+        context.SaveChanges();  //guarda
 
-        // Reload connections
-        connections = context.Connections.ToList();
+        connections = context.Connections.ToList(); //recarga 
     }
 
+    //guarda perfil
     private void SaveProfile()
     {
         if (string.IsNullOrWhiteSpace(profileName))
             return;
 
-        // Create profile
+        // Crea perfil
         var profile = new Profile
         {
             Name = profileName
         };
 
-        context.Profiles.Add(profile);
+        context.Profiles.Add(profile);  //añade perfil a la base de datos
 
-        context.SaveChanges();
+        context.SaveChanges();  //guarda
 
-        // Save current connections
-        foreach (var connection in connections)
+        foreach (var connection in connections) //recorre las conexiones
         {
-            var profileConnection = new ProfileConnection
+            var profileConnection = new ProfileConnection   //y las va guardando
             {
                 ProfileId = profile.Id,
                 ReceiverId = connection.ReceiverId,
@@ -545,10 +538,8 @@
 
         context.SaveChanges();
 
-        // Reload profiles
         profiles = context.Profiles.ToList();
 
-        // Clear input
         profileName = "";
     }
 
@@ -557,18 +548,15 @@
         if (selectedProfileId == 0)
             return;
 
-        // Remove current connections
+        // Borra conexiones actuales
         context.Connections.RemoveRange(context.Connections);
 
         context.SaveChanges();
 
-        // Get saved profile connections
-        var profileConnections = context.ProfileConnections
-            .Where(pc => pc.ProfileId == selectedProfileId)
-            .ToList();
+        // Almacena el perfil seleccionado 
+        var profileConnections = context.ProfileConnections.Where(pc => pc.ProfileId == selectedProfileId).ToList();
 
-        // Restore connections
-        foreach (var pc in profileConnections)
+        foreach (var pc in profileConnections)  //misma logica de antes, recorre las conexiones del perfil seleccionado y las va añadiendo a la tabla de conexiones, para que se refleje en la interfaz
         {
             var connection = new Connection
             {
@@ -581,8 +569,7 @@
 
         context.SaveChanges();
 
-        // Reload current connections
-        connections = context.Connections.ToList();
+        connections = context.Connections.ToList(); //las pasa a string
     }
 
     private void DeleteProfile()
@@ -590,32 +577,31 @@
         if (selectedProfileId == 0)
             return;
 
-        // Get profile
-        var profile = context.Profiles
-            .FirstOrDefault(p => p.Id == selectedProfileId);
+        // Obtenemos el perfil seleccionado 
+        var profile = context.Profiles.FirstOrDefault(p => p.Id == selectedProfileId);
 
         if (profile == null)
             return;
 
-        // Get profile connections
-        var profileConnections = context.ProfileConnections
-            .Where(pc => pc.ProfileId == selectedProfileId);
+        // Obtenemos sus conexiones relacionadas
+        var profileConnections = context.ProfileConnections.Where(pc => pc.ProfileId == selectedProfileId);
 
-        // Remove profile connections
+        // Las borramos
         context.ProfileConnections.RemoveRange(profileConnections);
 
-        // Remove profile
+        // y borramos el perfil
         context.Profiles.Remove(profile);
 
         context.SaveChanges();
 
-        // Reload profiles
+        // Actualizamos los perfiles para que se vea que ha desaparecdo el que acabamos de borrar
         profiles = context.Profiles.ToList();
 
-        // Reset selected profile
         selectedProfileId = 0;
     }
 
+
+    //transorma el C# en css, los enum los pasa a clases css 
     private string GetStatusClass(DeviceStatus status)
     {
         return status switch

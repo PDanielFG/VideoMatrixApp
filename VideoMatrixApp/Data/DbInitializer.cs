@@ -1,4 +1,9 @@
-﻿namespace VideoMatrixApp
+﻿using VideoMatrixApp.Enums;
+using VideoMatrixApp.Models;
+using VideoMatrixApp.Enums;
+using System.Linq;
+
+namespace VideoMatrixApp.Data
 {
     public static class DbInitializer
     {

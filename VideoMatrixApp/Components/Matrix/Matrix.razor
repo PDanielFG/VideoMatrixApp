@@ -1,0 +1,162 @@
+﻿@page "/"
+
+
+<PageTitle>Video Matrix</PageTitle>
+
+<div class="matrix-container">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+
+        <h3>Administración matriz de vídeo</h3>
+
+        <!-- PROFILE CONTROLS -->
+        <div class="top-bar-controls">
+
+            <!-- PROFILE NAME -->
+            <input type="text"
+                   placeholder="Nombre perfil"
+                   @bind="profileName" />
+
+            <!-- SAVE PROFILE -->
+            <button class="btn"
+                    @onclick="SaveProfile">
+                Guardar perfil
+            </button>
+
+            <!-- PROFILE SELECTOR -->
+            <div class="profile-row">
+                <select @bind="selectedProfileId">
+
+                    @* Primera opcion por defecto *@
+                    <option value="0">
+                        Selecciona perfil
+                    </option>
+
+                    @* Para mostrar el nombre de los perfiles guardados, de manera dinámica*@
+                    @foreach (var profile in profiles)
+                    {
+                        <option value="@profile.Id">
+                            @profile.Name
+                        </option>
+                    }
+
+                </select>
+            </div>
+
+            <!-- LOAD PROFILE -->
+            <button class="btn"
+                    @onclick="LoadProfile">
+                Cargar perfil
+            </button>
+
+            <!-- DELETE PROFILE -->
+            <button class="btn btn-danger"
+                    @onclick="DeleteProfile">
+                Borrar perfil
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        
+        <!-- CUADRÍCULA DE RECEPTORES -->
+        <div class="matrix-grid">
+            @foreach (var receiver in receivers)    @*Recorre cada receptor*@ 
+            {
+                @* Genera una tarjeta para cada receptor, clickado o no  *@
+                <div class="receiver-tile @(selectedReceiver?.Id == receiver.Id ? "selected" : "")" 
+                     @onclick="() => SelectReceiver(receiver)"
+                     @ondblclick="() => fullscreenReceiver = receiver">
+
+                    <!-- RECEIVER NAME -->
+                    <div class="receiver-header">
+                        <span>@receiver.Name</span>
+                        <button class="fullscreen-btn"
+                                @onclick:stopPropagation="true"
+                                @onclick="() => fullscreenReceiver = receiver">
+                            Pantalla completa
+                        </button>
+                    </div>
+
+                    <!-- CONNECTED TRANSMITTER -->
+                    @if (GetTransmitter(receiver) is Device connectedTx)
+                    {
+                        <div class="connection-info">
+                            Conectado a: @connectedTx.Name  <!--Busca la conexión y la muestra en la tarjeta receptor-->
+                        </div>
+                    }
+
+                    <!-- VIDEO -->
+                    <div class="video-area">    <!--Altura tarjeta-->
+
+                        @* Se comprueba si existe el transmisor y se encuentra encendido*@
+                        @if (GetTransmitter(receiver) is Device tx && tx.Status == DeviceStatus.On)
+                        {
+                            <img src="@tx.ImageUrl"
+                                 class="video-feed" />  @*Muestra la imagen del transmisor en el receptor *@
+                        }
+                        else
+                        {
+                            <div class="no-signal">
+                                SIN SEÑAL              <!--Indica que no hay señal-->
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- TRANSMITTER PANEL -->
+        <div class="transmitter-panel">
+
+            <h4>Transmisores</h4>
+
+            @foreach (var tx in transmitters)   @*Recorre cada transmisor y va creando tarjetas, esta vez en menu vertical*@
+            {
+                <div class="transmitter-item"
+                     @onclick="() => AssignTransmitter(tx)">    @*Clickable, los enlaaz con el receptor seleccionado*@
+
+                    <img src="@tx.ImageUrl" />  @*Imagen/video del transmisor*@
+                    
+                    <!--Datos del transmisor-->
+                    <div>
+                        <strong>@tx.Name</strong>
+                        <p>@tx.IpAddress</p>
+                        <p class="@(GetStatusClass(tx.Status))">
+                            @tx.Status
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+    @if (fullscreenReceiver != null)    @*Receptor con pantalla completa activado, entonces muestralo*@
+    {
+        <div class="fullscreen-view">
+
+            <button class="btn btn-danger"
+                    style="position:absolute;top:20px;right:20px;z-index:10000;"
+                    @onclick="() => fullscreenReceiver = null">
+                Salir pantalla completa
+            </button>
+
+            @{
+                var tx = GetTransmitter(fullscreenReceiver);    @*¿Que camara esta conectada al receptor?, para mostrar realmente en pantalla completa la camara que es lo que tiene la imagen*@
+            }
+
+            @if (tx != null && tx.Status == DeviceStatus.On)
+            {
+                <img src="@tx.ImageUrl" class="fullscreen-video" />    @*Pantalla completa, imagen*@
+            }
+            else
+            {
+                <div class="no-signal">
+                SIN SEÑAL   @*Pantalla completa, sin señal*@
+                </div>
+            }
+        </div>
+    }

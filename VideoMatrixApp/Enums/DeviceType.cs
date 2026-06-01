@@ -1,4 +1,4 @@
-﻿namespace VideoMatrixApp
+﻿namespace VideoMatrixApp.Enums
 {
     public enum DeviceType  //Lo uso en Device.cs
     {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using VideoMatrixApp.Models;
 
-namespace VideoMatrixApp
+namespace VideoMatrixApp.Data
 {
     public class ApplicationDbContext: DbContext
     {

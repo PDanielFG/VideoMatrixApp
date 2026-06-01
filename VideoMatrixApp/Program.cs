@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using VideoMatrixApp;
 using VideoMatrixApp.Components;
+using VideoMatrixApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

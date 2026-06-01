@@ -1,4 +1,4 @@
-﻿namespace VideoMatrixApp
+﻿namespace VideoMatrixApp.Enums
 {
     public enum DeviceStatus    //Lo uso en Device.cs
     {

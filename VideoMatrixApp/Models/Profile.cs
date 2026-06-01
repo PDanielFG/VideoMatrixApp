@@ -1,4 +1,4 @@
-﻿namespace VideoMatrixApp
+﻿namespace VideoMatrixApp.Models
 {
     //Le da nombre a ese perfil guardado
     public class Profile

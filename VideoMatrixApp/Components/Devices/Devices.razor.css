@@ -1,0 +1,129 @@
+﻿
+.devices-container {
+    padding: 20px;
+    color: white;
+    background-color: #1b1b1b;
+    min-height: 100vh;
+}
+
+.form-container {
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: none;
+        border-radius: 5px;
+    }
+
+.btn {
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.btn-primary {
+    background: #0d6efd;
+}
+
+    .btn-primary:hover {
+        background: #0b5ed7;
+    }
+
+.btn-danger {
+    background: #dc3545;
+}
+
+    .btn-danger:hover {
+        background: #bb2d3b;
+    }
+
+.devices-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #222;
+}
+
+    .devices-table th,
+    .devices-table td {
+        padding: 12px;
+        border: 1px solid #444;
+        text-align: left;
+    }
+
+    .devices-table th {
+        background: #111;
+    }
+
+.device-image {
+    width: 100px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.status-on {
+    color: lime;
+    font-weight: bold;
+}
+
+.status-off {
+    color: red;
+    font-weight: bold;
+}
+
+.status-standby {
+    color: orange;
+    font-weight: bold;
+}
+
+/* Repsonsive. Pantalla movil */
+@media (max-width: 600px) {
+
+    .devices-table thead {
+        display: none;
+    }
+
+    .devices-table,
+    .devices-table tbody,
+    .devices-table tr,
+    .devices-table td {
+        display: block;
+        width: 100%;
+    }
+
+        .devices-table tr {
+            background: #222;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .devices-table td {
+            border: none;
+            padding: 6px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+}

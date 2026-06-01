@@ -1,0 +1,185 @@
+﻿@page "/devices"
+
+<PageTitle>Devices</PageTitle>
+
+
+<div class="devices-container">
+
+    <h1>Administración de dispositivos</h1>
+
+    <!-- FORMULARIO -->
+    <div class="form-container">
+
+        <h3>Crear Dispositivo</h3>
+
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" @bind="newDevice.Name" />
+        </div>
+
+        <div class="form-group">
+            <label>Dirección IP</label>
+            <input type="text" @bind="newDevice.IpAddress" />
+        </div>
+
+        <!--Permite poner imagen si creamos un transmisor, si es receptor no, logicamente-->
+        @if (newDevice.DeviceType == DeviceType.Transmitter)
+        {
+            <div class="form-group">
+                <label>URL Imagen</label>
+                <input type="text" @bind="newDevice.ImageUrl" />
+            </div>
+        }
+        else
+        {
+            <div class="form-group">
+                <label>URL Imagen</label>
+                <input type="text" disabled value="No disponible para Receptor" />
+            </div>
+        }
+
+        <div class="form-group">
+            <label>Tipo de dispositivo</label>
+            <select @bind="newDevice.DeviceType">
+                <option value="@DeviceType.Transmitter">Transmisor</option>
+                <option value="@DeviceType.Receiver">Receptor</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Estado</label>
+            <select @bind="newDevice.Status">
+                <option value="@DeviceStatus.On">On</option>    <!--DeviceStatus de ApplicationDbContext, referencia a tabla C#-->
+                <option value="@DeviceStatus.Standby">Standby</option>
+                <option value="@DeviceStatus.Off">Off</option>
+            </select>
+        </div>
+
+        <button class="btn btn-primary" @onclick="CreateDevice">
+            Crear dispositivo
+        </button>
+
+    </div>
+
+    <!-- TABLE -->
+    <table class="devices-table">
+
+        <thead>
+            <tr>
+                <th>Preview</th>
+                <th>Nombre</th>
+                <th>IP</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var device in devices)
+            {
+                <tr>
+
+                    <!-- IMAGE -->
+                    <td>
+                        @if (device.DeviceType == DeviceType.Transmitter)
+                        {
+                            <img src="@device.ImageUrl" class="device-image" />
+                        }
+                        else
+                        {
+                            <span>Sin Imagen</span>
+                        }
+                    </td>
+
+                    <!-- NAME -->
+                    <td>
+                        @if (editingDeviceId == device.Id)  @*Alterna entre mostrar el valor, o un campo para editar, para todos los campos*@
+                        {
+                            <input @bind="editingDevice.Name" />
+                        }
+                        else
+                        {
+                            @device.Name
+                        }
+                    </td>
+
+                    <!-- IP -->
+                    <td>
+                        @if (editingDeviceId == device.Id)
+                        {
+                            <input @bind="editingDevice.IpAddress" />
+                        }
+                        else
+                        {
+                            @device.IpAddress
+                        }
+                    </td>
+
+                    <!-- TYPE -->
+                    <td>
+                        @if (editingDeviceId == device.Id)
+                        {
+                            <span>
+                                @editingDevice.DeviceType
+                            </span>
+                        }
+                        else
+                        {
+                            @device.DeviceType
+                        }
+                    </td>
+
+                    <!-- STATUS -->
+                    <td>
+                        @if (editingDeviceId == device.Id)
+                        {
+                            <select @bind="editingDevice.Status">
+                                <option value="@DeviceStatus.On">On</option>
+                                <option value="@DeviceStatus.Standby">Standby</option>
+                                <option value="@DeviceStatus.Off">Off</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <span class="@GetStatusClass(device.Status)">
+                                @device.Status
+                            </span>
+                        }
+                    </td>
+
+                    <!-- ACTIONS -->
+                    <td>
+                        @* Modo edicion, pongo botones de guardar o cancelar edicion, similar a lo anterior pero con botones *@
+                        @if (editingDeviceId == device.Id)
+                        {
+                            <button class="btn btn-primary" @onclick="SaveEdit">
+                                Save
+                            </button>
+
+                            <button class="btn btn-danger" @onclick="CancelEdit">
+                                Cancel
+                            </button>
+                        }
+                        else   
+                        {
+                            <button class="btn btn-primary" @onclick="() => StartEdit(device)">
+                                Edit
+                            </button>
+
+                            <button class="btn btn-danger" @onclick="() => DeleteDevice(device.Id)">
+                                Delete
+                            </button>
+                        }
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

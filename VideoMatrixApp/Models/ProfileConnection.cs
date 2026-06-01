@@ -1,4 +1,4 @@
-﻿namespace VideoMatrixApp
+﻿namespace VideoMatrixApp.Models
 {
     //Las conexiones cuando se pulsa guardar perfil
     public class ProfileConnection

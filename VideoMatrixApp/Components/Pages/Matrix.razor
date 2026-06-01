@@ -20,12 +20,15 @@
         padding: 10px;
         background: #1e2a38;
         color: white;
+        flex-wrap: wrap;
+        gap: 10px;
     }
 
     .top-bar-controls {
         display: flex;
         gap: 10px;
         align-items: center;
+        flex-wrap: wrap;
     }
 
     .main-content {
@@ -39,9 +42,10 @@
     .matrix-grid {
         flex: 3;
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: 10px;
         overflow-y: auto;
+        align-content: start;
     }
 
     .receiver-tile {
@@ -82,9 +86,9 @@
 
     .video-feed {
         width: 100%;
-        flex: 1;
+        height: 100%;
         object-fit: cover;
-        min-height: 0;
+        display: block;
     }
 
     .no-signal {
@@ -102,6 +106,7 @@
         color: white;
         padding: 10px;
         overflow-y: auto;
+        min-width: 240px;
     }
 
     .transmitter-item {
@@ -189,6 +194,54 @@
             background: #0b5ed7;
         }
 
+
+    /* Responsive. Móvil */
+    /* Responsive. Móvil */
+    @@media (max-width: 768px) {
+
+        .main-content {
+            flex-direction: column;
+        }
+
+        .top-bar {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .top-bar-controls {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+            .top-bar-controls input,
+            .top-bar-controls select,
+            .top-bar-controls button {
+                width: 100%;
+                max-width: 320px;
+            }
+
+        .profile-row {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+            .profile-row select {
+                width: 100%;
+                max-width: 320px;
+            }
+    }
+
+    .video-area {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 180px; /* 👈 clave */
+    }
 </style>
 
 <div class="matrix-container">
@@ -213,20 +266,23 @@
             </button>
 
             <!-- PROFILE SELECTOR -->
-            <select @bind="selectedProfileId">
+            
+            <div class="profile-row">
+                <select @bind="selectedProfileId">
 
-                <option value="0">
-                    Selecciona perfil
-                </option>
-
-                @foreach (var profile in profiles)
-                {
-                    <option value="@profile.Id">
-                        @profile.Name
+                    <option value="0">
+                        Selecciona perfil
                     </option>
-                }
 
-            </select>
+                    @foreach (var profile in profiles)
+                    {
+                        <option value="@profile.Id">
+                            @profile.Name
+                        </option>
+                    }
+
+                </select>
+            </div>
 
             <!-- LOAD PROFILE -->
             <button class="btn"
@@ -278,18 +334,22 @@
                     }
 
                     <!-- VIDEO -->
-                    @if (GetTransmitter(receiver) is Device tx &&
-                   tx.Status == DeviceStatus.On)
-                    {
-                        <img src="@tx.ImageUrl"
-                             class="video-feed" />
-                    }
-                    else
-                    {
-                        <div class="no-signal">
-                            SIN SEÑAL
-                        </div>
-                    }
+                    <div class="video-area">
+
+                        @if (GetTransmitter(receiver) is Device tx &&
+                             tx.Status == DeviceStatus.On)
+                        {
+                            <img src="@tx.ImageUrl"
+                                 class="video-feed" />
+                        }
+                        else
+                        {
+                            <div class="no-signal">
+                                SIN SEÑAL
+                            </div>
+                        }
+
+                    </div>
 
                 </div>
             }

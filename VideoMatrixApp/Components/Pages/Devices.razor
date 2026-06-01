@@ -102,6 +102,38 @@
         font-weight: bold;
     }
 
+    /* Repsonsive. Pantalla movil */
+    @@media (max-width: 600px) {
+
+        .devices-table thead {
+            display: none;
+        }
+
+        .devices-table,
+        .devices-table tbody,
+        .devices-table tr,
+        .devices-table td {
+            display: block;
+            width: 100%;
+        }
+
+            .devices-table tr {
+                background: #222;
+                margin-bottom: 10px;
+                padding: 10px;
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            .devices-table td {
+                border: none;
+                padding: 6px 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+    }
+
 </style>
 
 <div class="devices-container">

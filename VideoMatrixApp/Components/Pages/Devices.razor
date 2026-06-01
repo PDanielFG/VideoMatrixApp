@@ -209,10 +209,9 @@
                     <td>
                         @if (editingDeviceId == device.Id)
                         {
-                            <select @bind="editingDevice.DeviceType">
-                                <option value="@DeviceType.Transmitter">Transmisor</option>
-                                <option value="@DeviceType.Receiver">Receptor</option>
-                            </select>
+                            <span>
+                                @editingDevice.DeviceType
+                            </span>
                         }
                         else
                         {

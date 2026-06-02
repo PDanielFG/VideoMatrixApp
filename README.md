@@ -100,3 +100,9 @@ http://localhost:5213
 * MySQL
 * LINQ
 * Bootstrap
+
+## Demo
+
+Se puede ver una demostración de la aplicación en el siguiente vídeo:
+
+**Enlace:** https://drive.google.com/drive/folders/1xftnHGHQP_FVNsGyYi9rxGzUGMalOiVV?usp=drive_link
